@@ -14,6 +14,10 @@ Code that explores aspects of probability and statistics
 4. randomisation_tests -> Statistical randomisation (permutation and combination) tests.
 2. number_of_permutations_or_combinations -> Calculate the number of permutations and combinations from a given number of types to choose from and a given number of choices.
 
+## pythonista
+Apps built in Pythonista, "a full Python IDE for iOS". 
+1. running -> a running app that monitors time, location, distance, speed and elevation during running. Under development
+
 ## misc
 1. re_find_integer_or_decimal -> Regular expression that finds integers and decimal numbers in text, even when there are no spaces between them and other characters.
 
