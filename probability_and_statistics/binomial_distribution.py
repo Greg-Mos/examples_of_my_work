@@ -10,9 +10,10 @@ from scipy.special import factorial
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter 
+from scipy.stats import binom
     
-def binomial_distribution_general(n: int=2, 
-                                  Pyes: float=0.5) -> pd.DataFrame:
+def binomial_distribution(n: int=2, 
+                          p: float=0.5) -> pd.DataFrame:
     '''
     Returns a pandas dataframe of and plots the binomial distribution for a 
     given number of trials
@@ -21,7 +22,7 @@ def binomial_distribution_general(n: int=2,
     ----------
     n : int, optional
         The number of trials. The default is 2.
-    Pyes: float, optional
+    p: float, optional
         The probability (0-1) of the desired outcome in the trial. 
         (e.g. 0.5 for the probability of getting heads in a coin toss)
         The default is 0.5 
@@ -41,7 +42,7 @@ def binomial_distribution_general(n: int=2,
     # that land on the specific slice (hot!) after all 10 have been tossed 
     # onto the pizza can be calculated.
     
-    >>> chilli_pizza = binomial_distribution_general(10, 1/4)
+    >>> chilli_pizza = binomial_distribution(10, 1/4)
     >>> chilli_pizza
          probability      cum_prob
     X                             
@@ -81,7 +82,7 @@ def binomial_distribution_general(n: int=2,
     
     # Calculate the array of probabilities
     n_yes = np.arange(n+1)
-    n_yes_probability = Pyes**n_yes * (1-Pyes)**(n-n_yes) * (factorial(n)/
+    n_yes_probability = p**n_yes * (1-p)**(n-n_yes) * (factorial(n)/
                                                      (factorial(n - n_yes) * 
                                                       factorial(n_yes)))
     # Tidy up in a pandas dataframe
@@ -117,5 +118,17 @@ def binomial_distribution_general(n: int=2,
         autolabel(rects)
     
     return binomial    
+
+# same process using scipy.stats.binom
+def binomial_distribution_with_scipy(n: int=2, 
+                                     p: float=0.5):
+    rv = binom(n, p)
+    x = list(range(n+1))
+    y = rv.pmf(x)
+    fig, ax = plt.subplots(figsize=[10,10])
+    ax.bar(x, y)
+    return y
+
+
     
     
