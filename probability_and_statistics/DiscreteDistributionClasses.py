@@ -35,6 +35,7 @@ class _DiscreteProbabilityDistribution():
         self.pmf_formula = None
         self.cdf_formula = None
         self.mean_formula = None
+        self.variance_formula = None
         self.X_range = [-np.inf, np.inf]
         self.name = 'X~DPD(parameters)'
     
@@ -121,6 +122,17 @@ class _DiscreteProbabilityDistribution():
 
         '''
         return eval(self.mean_formula)
+    
+    def variance(self) -> float:
+        '''
+        The variance of the probability distribution
+
+        Returns
+        -------
+        float.
+
+        '''
+        return eval(self.variance_formula)
     
     def _plot_discrete_distribution(self, 
                                     x: pd.core.series.Series, 
@@ -239,6 +251,7 @@ class Bernoulli(_DiscreteProbabilityDistribution):
         self.pmf_formula = ("self.parameters['p']**x *"
                             "(1-self.parameters['p'])**(1-x)")
         self.mean_formula = "1 * parameters['p']"
+        self.variance_formula = "self.parameters['p'] * (1 - self.parameters['p'])"
         self.X_range = [0, 1]
         self.name = 'X~Bernoulli({0})'.format(self.parameters['p'])
     
@@ -270,6 +283,8 @@ class Binomial(_DiscreteProbabilityDistribution):
                             "(1-self.parameters['p'])**"
                             "(self.parameters['n']-x)")
         self.mean_formula = "self.parameters['n'] * self.parameters['p']"
+        self.variance_formula = ("self.parameters['n'] * self.parameters['p']"
+                                 "* (1 - self.parameters['p'])")       
         self.X_range = [0, n]
         self.name = 'X~B({0},{1})'.format(self.parameters['n'], 
                                           self.parameters['p'])
@@ -300,6 +315,8 @@ class Geometric(_DiscreteProbabilityDistribution):
                             "self.parameters['p']")
         self.cdf_formula ="1-(1-self.parameters['p'])**(x)"
         self.mean_formula = "1 / self.parameters['p']"
+        self.variance_formula = ("(1 - self.parameters['p']) /"
+                                 "self.parameters['p']**2")
         self.X_range = [1, np.inf]
         self.name = 'X~G({0})'.format(self.parameters['p'])        
 
@@ -323,6 +340,7 @@ class Poisson(_DiscreteProbabilityDistribution):
         self.pmf_formula = ("self.parameters['l']**(x) / "
                             "factorial(x) * np.exp(-self.parameters['l'])")
         self.mean_formula = "1 * self.parameters['l']"
+        self.variance_formula = "1 * self.parameters['l']"
         self.X_range = [0, np.inf]
         self.name = 'X~Poisson({0})'.format(self.parameters['l'])   
         
@@ -353,6 +371,10 @@ class Uniform(_DiscreteProbabilityDistribution):
         self.cdf_formula = ("(x - self.parameters['m'] + 1) / "
                             "(self.parameters['n'] - self.parameters['m'] + 1)")
         self.mean_formula = "(self.parameters['n'] + self.parameters['m']) / 2"
+        self.variance_formula = ("1/12 * (self.parameters['n']"
+                                 " - self.parameters['m']) * "
+                                 "(self.parameters['n'] - self.parameters['m']"
+                                 "+ 2)")
         self.X_range = [self.parameters['m'], self.parameters['n']]
         self.name = 'X~Uniform({0}, {1})'.format(self.parameters['m'],
                                                  self.parameters['n']) 
