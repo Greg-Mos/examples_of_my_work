@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter 
 from scipy.stats import binom
 from typing import List
+from decimal import Decimal
 
 class _DiscreteProbabilityDistribution():
     
@@ -67,7 +68,7 @@ class _DiscreteProbabilityDistribution():
         results = {'x' : [], 'p(x)' : []}
         for x in y:
             self._check_value_is_in_range(x)
-            px = eval(self.pmf_formula)
+            px = float(eval(self.pmf_formula))
             # px = round(px, 4)
             results['x'].append(x)
             results['p(x)'].append(px)
@@ -85,7 +86,7 @@ class _DiscreteProbabilityDistribution():
                                                          
         Returns
         -------
-        A pandas Dataframe with columns 'x' , 'p(x)' and 'F(x)', where x is 
+        A pandas Dataframe with columns 'x' and 'F(x)', where x is 
         (X=x); and F(x) is P(X<=x).
 
         '''
@@ -104,14 +105,67 @@ class _DiscreteProbabilityDistribution():
             results = {'x' : [], 'F(x)' : []}
             for x in y:
                 self._check_value_is_in_range(x)
-                px = eval(self.cdf_formula)
+                px = float(eval(self.cdf_formula))
                 # px = round(px, 4)
                 results['x'].append(x)
                 results['F(x)'].append(px)
-                result = pd.DataFrame(results)
+            result = pd.DataFrame(results)
         
         return result 
     
+    def _inverse_cdf_helper(self, x_start:int, a:float) -> int:
+        '''
+        
+        Parameters
+        ----------
+        a : float
+            The a-quantile is defined to be the smallest value of x in the
+            range of X satisfying F(x) >= a. 1 < a < 0.
+        x_start: 
+            The value of X from which to start the search
+
+        Returns
+        -------
+        int
+            The a-quantile.
+
+        '''
+        x = x_start
+        candidate = self.cdf(x).iloc[0,1]
+        while candidate < a:
+            x = x + 1
+            candidate = self.cdf(x).iloc[0,1]
+        return x
+    
+    def inverse_cdf(self, a: List[float]) -> pd.core.frame.DataFrame:
+        '''
+        Returns the a-quantile
+
+        Parameters
+        ----------
+        a : List[float]
+            The a-quantile is defined to be the smallest value of x in the
+            range of X satisfying F(x) >= a. 1 < a < 0.
+
+        Returns
+        -------
+        A pandas Dataframe with columns 'a' and 'qa'.
+
+        '''
+        if type(a) == float or type(a) == int:
+            y = [a]
+        else:
+            y = list(a)
+        y.sort()
+        x_start = self.X_range[0]
+        results = {'a' : y, 'qa' : []} 
+        for alpha in y:
+            x = self._inverse_cdf_helper(x_start, alpha)
+            x_start = x
+            results['qa'].append(x)
+        result = pd.DataFrame(results)
+        return result
+           
     def mean(self) -> float:
         '''
         The mean or expected value of the probability distribution
@@ -121,7 +175,7 @@ class _DiscreteProbabilityDistribution():
         float.
 
         '''
-        return eval(self.mean_formula)
+        return float(eval(self.mean_formula))
     
     def variance(self) -> float:
         '''
@@ -132,7 +186,7 @@ class _DiscreteProbabilityDistribution():
         float.
 
         '''
-        return eval(self.variance_formula)
+        return float(eval(self.variance_formula))
     
     def _plot_discrete_distribution(self, 
                                     x: pd.core.series.Series, 
@@ -247,7 +301,7 @@ class Bernoulli(_DiscreteProbabilityDistribution):
         None.
 
         '''
-        super().__init__(parameters={'p': p})
+        super().__init__(parameters={'p': Decimal(str(p))})
         self.pmf_formula = ("self.parameters['p']**x *"
                             "(1-self.parameters['p'])**(1-x)")
         self.mean_formula = "1 * parameters['p']"
@@ -277,7 +331,7 @@ class Binomial(_DiscreteProbabilityDistribution):
         None.
 
         '''
-        super().__init__(parameters={'n': n, 'p': p})
+        super().__init__(parameters={'n': n, 'p': Decimal(str(p))})
         self.pmf_formula = ("comb(self.parameters['n'], x) * "
                             "self.parameters['p']**x * "
                             "(1-self.parameters['p'])**"
@@ -310,10 +364,10 @@ class Geometric(_DiscreteProbabilityDistribution):
         None.
 
         '''
-        super().__init__(parameters={'p': p})
+        super().__init__(parameters={'p': Decimal(str(p))})
         self.pmf_formula = ("(1-self.parameters['p'])**(x-1) * "
                             "self.parameters['p']")
-        self.cdf_formula ="1-(1-self.parameters['p'])**(x)"
+        self.cdf_formula ="1-(1-(self.parameters['p']))**(x)"
         self.mean_formula = "1 / self.parameters['p']"
         self.variance_formula = ("(1 - self.parameters['p']) /"
                                  "self.parameters['p']**2")
@@ -336,7 +390,7 @@ class Poisson(_DiscreteProbabilityDistribution):
         None.
 
         '''
-        super().__init__(parameters={'l': l})
+        super().__init__(parameters={'l': Decimal(str(l))})
         self.pmf_formula = ("self.parameters['l']**(x) / "
                             "factorial(x) * np.exp(-self.parameters['l'])")
         self.mean_formula = "1 * self.parameters['l']"
@@ -366,7 +420,7 @@ class Uniform(_DiscreteProbabilityDistribution):
         None.
 
         '''
-        super().__init__(parameters={'m': m, 'n': n})
+        super().__init__(parameters={'m': Decimal(str(m)), 'n': Decimal(str(n))})
         self.pmf_formula = "1 / (self.parameters['n'] - self.parameters['m'] + 1)"
         self.cdf_formula = ("(x - self.parameters['m'] + 1) / "
                             "(self.parameters['n'] - self.parameters['m'] + 1)")
