@@ -12,7 +12,10 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter 
 from scipy.stats import binom
 from typing import List
-from decimal import Decimal
+import numbers
+from decimal import *
+
+getcontext().prec = 5
 
 class _DiscreteProbabilityDistribution():
     
@@ -68,8 +71,7 @@ class _DiscreteProbabilityDistribution():
         results = {'x' : [], 'p(x)' : []}
         for x in y:
             self._check_value_is_in_range(x)
-            px = float(eval(self.pmf_formula))
-            # px = round(px, 4)
+            px = eval(self.pmf_formula)
             results['x'].append(x)
             results['p(x)'].append(px)
         return pd.DataFrame(results)
@@ -105,20 +107,19 @@ class _DiscreteProbabilityDistribution():
             results = {'x' : [], 'F(x)' : []}
             for x in y:
                 self._check_value_is_in_range(x)
-                px = float(eval(self.cdf_formula))
-                # px = round(px, 4)
+                Fx = eval(self.cdf_formula)
                 results['x'].append(x)
-                results['F(x)'].append(px)
+                results['F(x)'].append(Fx)
             result = pd.DataFrame(results)
         
         return result 
     
-    def _inverse_cdf_helper(self, x_start:int, a:float) -> int:
+    def _inverse_cdf_helper(self, x_start:int, a:Decimal) -> int:
         '''
         
         Parameters
         ----------
-        a : float
+        a : Decimal
             The a-quantile is defined to be the smallest value of x in the
             range of X satisfying F(x) >= a. 1 < a < 0.
         x_start: 
@@ -137,13 +138,13 @@ class _DiscreteProbabilityDistribution():
             candidate = self.cdf(x).iloc[0,1]
         return x
     
-    def inverse_cdf(self, a: List[float]) -> pd.core.frame.DataFrame:
+    def inverse_cdf(self, a: List[Decimal]) -> pd.core.frame.DataFrame:
         '''
         Returns the a-quantile
 
         Parameters
         ----------
-        a : List[float]
+        a : List[Decimal]
             The a-quantile is defined to be the smallest value of x in the
             range of X satisfying F(x) >= a. 1 < a < 0.
 
@@ -152,7 +153,7 @@ class _DiscreteProbabilityDistribution():
         A pandas Dataframe with columns 'a' and 'qa'.
 
         '''
-        if type(a) == float or type(a) == int:
+        if isinstance(a, numbers.Number):
             y = [a]
         else:
             y = list(a)
@@ -332,7 +333,7 @@ class Binomial(_DiscreteProbabilityDistribution):
 
         '''
         super().__init__(parameters={'n': n, 'p': Decimal(str(p))})
-        self.pmf_formula = ("comb(self.parameters['n'], x) * "
+        self.pmf_formula = ("Decimal(comb(self.parameters['n'], x)) * "
                             "self.parameters['p']**x * "
                             "(1-self.parameters['p'])**"
                             "(self.parameters['n']-x)")
@@ -392,7 +393,8 @@ class Poisson(_DiscreteProbabilityDistribution):
         '''
         super().__init__(parameters={'l': Decimal(str(l))})
         self.pmf_formula = ("self.parameters['l']**(x) / "
-                            "factorial(x) * np.exp(-self.parameters['l'])")
+                            "Decimal(factorial(x)) * "
+                            "Decimal(np.exp(-self.parameters['l']))")
         self.mean_formula = "1 * self.parameters['l']"
         self.variance_formula = "1 * self.parameters['l']"
         self.X_range = [0, np.inf]
@@ -425,8 +427,8 @@ class Uniform(_DiscreteProbabilityDistribution):
         self.cdf_formula = ("(x - self.parameters['m'] + 1) / "
                             "(self.parameters['n'] - self.parameters['m'] + 1)")
         self.mean_formula = "(self.parameters['n'] + self.parameters['m']) / 2"
-        self.variance_formula = ("1/12 * (self.parameters['n']"
-                                 " - self.parameters['m']) * "
+        self.variance_formula = ("(Decimal('1') / Decimal('12')) *"
+                                 "(self.parameters['n'] - self.parameters['m']) *"
                                  "(self.parameters['n'] - self.parameters['m']"
                                  "+ 2)")
         self.X_range = [self.parameters['m'], self.parameters['n']]
