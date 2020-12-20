@@ -15,6 +15,7 @@ from typing import List
 import numbers
 from decimal import *
 
+# set the precision of Decimal to 5 significant figures
 getcontext().prec = 5
 
 class _DiscreteProbabilityDistribution():
@@ -41,7 +42,10 @@ class _DiscreteProbabilityDistribution():
         self.mean_formula = None
         self.variance_formula = None
         self.X_range = [-np.inf, np.inf]
-        self.name = 'X~DPD(parameters)'
+        self.name = 'X ~ DPD(parameters)'
+    
+    def __repr__(self):
+        return self.name
     
     def _check_value_is_in_range(self, x: int):
         if not ((self.X_range[0] <= x) and (x <=  self.X_range[1])):
@@ -161,6 +165,8 @@ class _DiscreteProbabilityDistribution():
         x_start = self.X_range[0]
         results = {'a' : y, 'qa' : []} 
         for alpha in y:
+            if not ((0 < alpha) and (alpha < 1)):
+                raise TypeError("{} is out of range {}".format(alpha, (0,1)))
             x = self._inverse_cdf_helper(x_start, alpha)
             x_start = x
             results['qa'].append(x)
@@ -176,7 +182,7 @@ class _DiscreteProbabilityDistribution():
         float.
 
         '''
-        return float(eval(self.mean_formula))
+        return eval(self.mean_formula)
     
     def variance(self) -> float:
         '''
@@ -187,7 +193,7 @@ class _DiscreteProbabilityDistribution():
         float.
 
         '''
-        return float(eval(self.variance_formula))
+        return eval(self.variance_formula)
     
     def _plot_discrete_distribution(self, 
                                     x: pd.core.series.Series, 
@@ -238,7 +244,7 @@ class _DiscreteProbabilityDistribution():
             autolabel(rects)
         return ax
     
-    def pmf_of_range_with_plot(self, start: int, end: int):
+    def plot_pmf_of_range(self, start: int, end: int):
         '''
         Parameters
         ----------
@@ -260,7 +266,7 @@ class _DiscreteProbabilityDistribution():
         ax = self._plot_discrete_distribution(pmf['x'], pmf['p(x)'])
         return pmf, ax
     
-    def cdf_of_range_with_plot(self, start, end):
+    def plot_cdf_of_range(self, start: int, end: int):
         '''
         Parameters
         ----------
@@ -308,7 +314,7 @@ class Bernoulli(_DiscreteProbabilityDistribution):
         self.mean_formula = "1 * parameters['p']"
         self.variance_formula = "self.parameters['p'] * (1 - self.parameters['p'])"
         self.X_range = [0, 1]
-        self.name = 'X~Bernoulli({0})'.format(self.parameters['p'])
+        self.name = 'X ~ Bernoulli({0})'.format(self.parameters['p'])
     
 class Binomial(_DiscreteProbabilityDistribution):
     
@@ -341,7 +347,7 @@ class Binomial(_DiscreteProbabilityDistribution):
         self.variance_formula = ("self.parameters['n'] * self.parameters['p']"
                                  "* (1 - self.parameters['p'])")       
         self.X_range = [0, n]
-        self.name = 'X~B({0},{1})'.format(self.parameters['n'], 
+        self.name = 'X ~ B({0},{1})'.format(self.parameters['n'], 
                                           self.parameters['p'])
 
 class Geometric(_DiscreteProbabilityDistribution):
@@ -373,7 +379,7 @@ class Geometric(_DiscreteProbabilityDistribution):
         self.variance_formula = ("(1 - self.parameters['p']) /"
                                  "self.parameters['p']**2")
         self.X_range = [1, np.inf]
-        self.name = 'X~G({0})'.format(self.parameters['p'])        
+        self.name = 'X ~ G({0})'.format(self.parameters['p'])        
 
 class Poisson(_DiscreteProbabilityDistribution):
     
@@ -398,7 +404,7 @@ class Poisson(_DiscreteProbabilityDistribution):
         self.mean_formula = "1 * self.parameters['l']"
         self.variance_formula = "1 * self.parameters['l']"
         self.X_range = [0, np.inf]
-        self.name = 'X~Poisson({0})'.format(self.parameters['l'])   
+        self.name = 'X ~ Poisson({0})'.format(self.parameters['l'])   
         
 class Uniform(_DiscreteProbabilityDistribution):
     
@@ -432,5 +438,5 @@ class Uniform(_DiscreteProbabilityDistribution):
                                  "(self.parameters['n'] - self.parameters['m']"
                                  "+ 2)")
         self.X_range = [self.parameters['m'], self.parameters['n']]
-        self.name = 'X~Uniform({0}, {1})'.format(self.parameters['m'],
+        self.name = 'X ~ Uniform({0}, {1})'.format(self.parameters['m'],
                                                  self.parameters['n']) 
