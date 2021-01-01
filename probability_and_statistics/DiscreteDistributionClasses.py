@@ -6,7 +6,8 @@ Created on Fri Oct 23 14:18:14 2020
 """
 
 import numpy as np
-from scipy.special import comb, factorial
+from scipy.special import comb
+from math import factorial
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter 
@@ -15,8 +16,8 @@ from typing import List
 import numbers
 from decimal import *
 
-# set the precision of Decimal to 5 significant figures
-getcontext().prec = 5
+# set the precision of Decimal to 10 significant figures
+getcontext().prec = 10
 
 class _DiscreteProbabilityDistribution():
     
@@ -139,7 +140,7 @@ class _DiscreteProbabilityDistribution():
         candidate = self.cdf(x).iloc[0,1]
         while candidate < a:
             x = x + 1
-            candidate = self.cdf(x).iloc[0,1]
+            candidate = candidate + self.pmf(x).iloc[0,1]
         return x
     
     def inverse_cdf(self, a: List[Decimal]) -> pd.core.frame.DataFrame:
@@ -398,8 +399,8 @@ class Poisson(_DiscreteProbabilityDistribution):
 
         '''
         super().__init__(parameters={'l': Decimal(str(l))})
-        self.pmf_formula = ("self.parameters['l']**(x) / "
-                            "Decimal(factorial(x)) * "
+        self.pmf_formula = ("(self.parameters['l']**(x) / "
+                            "Decimal(factorial(x))) * "
                             "Decimal(np.exp(-self.parameters['l']))")
         self.mean_formula = "1 * self.parameters['l']"
         self.variance_formula = "1 * self.parameters['l']"
