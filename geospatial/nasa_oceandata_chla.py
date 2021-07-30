@@ -10,8 +10,8 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from mowi import environment
-from mowi.utility import path
+#from mowi import environment
+#from mowi.utility import path
 
 from bokeh.plotting import figure, output_file, show, reset_output
 from bokeh.models import (BasicTicker, ColorBar, 
@@ -21,7 +21,6 @@ from bokeh.tile_providers import get_provider, Vendors
 from bokeh.palettes import Greens6
 import numpy as np
 # import pandas as pd
-from mowi.spatial import convert
 # from datetime import datetime
 import cartopy
 import cartopy.crs as ccrs
@@ -378,12 +377,6 @@ class NasaOceandataChla:
                                              self.data.lat.values.min())
         x_max, y_max = transformer.transform(self.data.lon.values.max(),
                                              self.data.lat.values.max())
-        # x_min, y_min = convert.convert_coords(self.data.lon.values.min(), 
-        #                                       self.data.lat.values.min(),
-        #                                       '4326', '3857')
-        # x_max, y_max = convert.convert_coords(self.data.lon.values.max(), 
-        #                                       self.data.lat.values.max(),
-        #                                       '4326', '3857')
         x_range = [x_min, x_max]
         y_range = [y_min, y_max]
         dw = x_max - x_min
