@@ -5,6 +5,7 @@
 2. distance_matrix ->  Create a table that contains a distance matrix with distances between all geometries in two geospatial layers. Unit for distances is the unit used by the layers' CRS. 
 3. modis_multispectral_hdf -> Operations for importing and plotting MODIS multispectral surface reflectance LPDACC products. These products can be downloaded from https://earthexplorer.usgs.gov/. 
 4. nasa_oceandata_chla -> Operations for importing and plotting satellite L3 chlor_a data from https://oceandata.sci.gsfc.nasa.gov/opendap/. 
+5. postcode_geocoding_R6 -> R script that geocodes UK postcodes from NSPL data. 
 
 ## probability_and_statistics
 Code that explores aspects of probability and statistics
