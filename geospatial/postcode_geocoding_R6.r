@@ -74,7 +74,7 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                                 #' @param pcd_data character or data.frame or tibble
                                 #' A CSV filepath or a dataframe or a tibble
                                 #' @return A tibble
-                                if (! "data.frame" %in% class(pcd_data)){
+                                if (! is.data.frame(pcd_data)){
                                   tb <- fread(file = pcd_data) 
                                 } else{
                                   tb <- pcd_data
