@@ -1,0 +1,4 @@
+1. Accomodate the possibility of more than one NSPL files in cmd (use most recent)
+2. Explore the user input function as an additonal way to select data files
+3. Explore the possibility of using another postcode lookup product e.g. OS CodePoint
+ 
