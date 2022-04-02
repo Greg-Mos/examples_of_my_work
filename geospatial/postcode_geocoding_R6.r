@@ -45,7 +45,7 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                                 tb <- private$get_data(pcd_data)
                                 extracted_pcds <- stringr::str_extract(tb[[column]], self$pcd_extract_regex) %>%
                                   stringr::str_to_upper()
-                                tb <- tibble::add_column(tb, pcds = extracted_pcds)
+                                tb <- tibble::add_column(tb, ext_pcds = extracted_pcds)
                                 return(tb)
                               },
                               geocode_pcds = function(pcd_data, column){
@@ -62,9 +62,15 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                                 #' results <- post$geocode_pcds("~/GIS/Postcodes/data.csv", "Addresses")
                                 tb <- self$extract_pcds(pcd_data = pcd_data, column = column)
                                 subpost <- self$postcodes %>%
-                                  dplyr::filter((pcds %in% tb$pcds) | (pcd %in% tb$pcds) | (pcd2 %in% tb$pcds))
-                                tb_geo <- dplyr::left_join(x = tb, y = subpost, by = "pcds") %>% 
-                                  dplyr::select(-c("pcd", "pcd2"))
+                                  dplyr::filter((pcds %in% tb$ext_pcds) | 
+                                                  (pcd %in% tb$ext_pcds) | 
+                                                  (pcd2 %in% tb$ext_pcds))
+                                tb_geo <- sqldf("SELECT * FROM
+                                                tb LEFT JOIN subpost ON 
+                                                tb.ext_pcds = subpost.pcds OR 
+                                                tb.ext_pcds = subpost.pcd OR 
+                                                tb.ext_pcds = subpost.pcd2") %>% 
+                                  tibble::as_tibble()
                                 return(tb_geo) 
                               }
                             ),
@@ -75,7 +81,7 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                                 #' A CSV filepath or a dataframe or a tibble
                                 #' @return A tibble
                                 if (! is.data.frame(pcd_data)){
-                                  tb <- fread(file = pcd_data) 
+                                  tb <- read.csv(file = pcd_data) 
                                 } else{
                                   tb <- pcd_data
                                 }
