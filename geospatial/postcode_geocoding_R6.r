@@ -1,5 +1,5 @@
 # Check if the required packages are installed, if not install them
-list_of_packages <- c("R6", "data.table", "stringr", "dplyr", "tibble", "docstring")
+list_of_packages <- c("R6", "data.table", "stringr", "dplyr", "tibble", "sqldf", "docstring")
 new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
 if(length(new_packages)) install.packages(new_packages)
 
