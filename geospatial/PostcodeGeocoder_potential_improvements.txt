@@ -3,4 +3,4 @@
 3. Explore the possibility of using another postcode lookup product e.g. OS CodePoint
 4. Remove the need for a complex join by removing white spaces from postcode keys before joining
 5. Look at a simpler validation regex (e.g. https://en.wikipedia.org/wiki/Postcodes_in_the_United_Kingdom#Formatting)
- 
+6. Allow the user to output additonal columns (e.g. Country) from NSPL
