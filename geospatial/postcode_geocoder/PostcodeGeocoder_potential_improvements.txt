@@ -1,4 +1,4 @@
-1. Accomodate the possibility of more than one NSPL files in cwd (use most recent)
+1. Accomodate the possibility of more than one NSPL files in cwd (use most recent) x
 2. Explore the user input function as an additonal way to select data files x
 3. Explore the possibility of using another postcode lookup product e.g. OS CodePoint
 4. Remove the need for a complex join by removing white spaces from postcode keys before joining x
