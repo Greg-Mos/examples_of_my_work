@@ -1,5 +1,5 @@
 # Load required packages
-list_of_packages <- c("R6", "data.table", "stringr", "dplyr", "tibble", "sqldf", "docstring", "lubirdate")
+list_of_packages <- c("R6", "data.table", "stringr", "dplyr", "tibble", "sqldf", "docstring", "lubridate")
 
 lapply(list_of_packages, library, character.only = TRUE)
 
