@@ -86,7 +86,7 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                               get_data = function(pcd_data = NULL){
                                 #' @description  Reads in data. Internal method for reading in data
                                 #' @param pcd_data character or data.frame or tibble
-                                #' A CSV filepath or a dataframe or a tibble. Defaults to NA, where it brings up a file selection
+                                #' A CSV filepath or a dataframe or a tibble. Defaults to NULL, which brings up a file selection
                                 #' dialog
                                 #' @return A tibble
                                 if (is.null(pcd_data)){
@@ -105,7 +105,7 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                               read_nspl = function(nspl_csv = NULL){
                                 #' @description  Internal method that is used in initialisation
                                 #' @param nspl_csv character. The file path of the National Statistics Postcode Lookup CSV file.
-                                #' Defaults to NULL, where it searches the cwd for the first filename starting with "NSPL_" 
+                                #' Defaults to NULL, which searches the cwd for the first filename starting with "NSPL_" 
                                 #' and ending with "20**_UK.csv". If multiple NSPL files are found, it uses that with the most
                                 #' recent date in its name.
                                 
