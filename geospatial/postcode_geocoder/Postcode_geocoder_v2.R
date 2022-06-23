@@ -20,9 +20,10 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                                 #' @description  PostcodeGeocoder takes UK postcodes and returns the corresponding
                                 #' geographic coordinates as eastings and northings. It uses NSPL data. 
                                 #' @param nspl_csv character. The file path of the National Statistics Postcode Lookup CSV file.
-                                #' Defaults to NA, whence it searches the cwd for the first filename starting with "NSPL_" 
-                                #' and ending with "20**_UK.csv"
-                                #' @param add_nspl_cols character. Additional columns to read import from NSPL.                                
+                                #' Defaults to NULL, whereby it searches the cwd for the first filename starting with "NSPL_" 
+                                #' and ending with "20**_UK.csv". If multiple NSPL files are found, it uses that with the most
+                                #' recent date in its name.If none, are found, it brings up a file selection dialog.
+                                #' @param add_nspl_cols character. Additional columns to import from NSPL.                                
                                 #' @examples
                                 #' post <- PostcodeGeocoder$new()
                                 #' post <- PostcodeGeocoder$new(nspl_csv = "~/GIS/Postcodes/Data/NSPL_NOV_2021_UK.csv")
@@ -35,7 +36,7 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                                 #' The name of the postcode/address column 
                                 #' @param pcd_data character or data.frame or tibble
                                 #' The file path of the CSV file or a data frame or a tibble with postcodes/addresses
-                                #' Defaults to NULL, which brings up a file selection dialog box. 
+                                #' Defaults to NULL, whereby it brings up a file selection dialog box. 
                                 #' @return A tibble with the extracted postcodes in a new column "ext_pcds"
                                 #' @examples
                                 #' post <- PostcodeGeocoder$new()
@@ -55,7 +56,7 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                                 #' The name of the postcode/address column 
                                 #' @param pcd_data character or data.frame or tibble
                                 #' The file path of the CSV file or a data frame or a tibble with postcodes/addresses
-                                #' Defaults to NULL, which brings up a file selection dialog box.
+                                #' Defaults to NULL, whreby it brings up a file selection dialog box.
                                 #' @return A geocoded dataset
                                 #' @examples
                                 #' post <- PostcodeGeocoder$new()
@@ -86,8 +87,8 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                               get_data = function(pcd_data = NULL){
                                 #' @description  Reads in data. Internal method for reading in data
                                 #' @param pcd_data character or data.frame or tibble
-                                #' A CSV filepath or a dataframe or a tibble. Defaults to NULL, which brings up a file selection
-                                #' dialog
+                                #' A CSV filepath or a dataframe or a tibble. Defaults to NULL, whereby it brings up a file selection
+                                #' dialog.
                                 #' @return A tibble
                                 if (is.null(pcd_data)){
                                   file = nspl_path <- choose.files(multi = FALSE, 
@@ -105,9 +106,9 @@ PostcodeGeocoder <- R6Class("PostcodeGeocoder",
                               read_nspl = function(nspl_csv = NULL){
                                 #' @description  Internal method that is used in initialisation
                                 #' @param nspl_csv character. The file path of the National Statistics Postcode Lookup CSV file.
-                                #' Defaults to NULL, which searches the cwd for the first filename starting with "NSPL_" 
+                                #' Defaults to NULL, whereby, it searches the cwd for the first filename starting with "NSPL_" 
                                 #' and ending with "20**_UK.csv". If multiple NSPL files are found, it uses that with the most
-                                #' recent date in its name.
+                                #' recent date in its name. If none are found, it brings up a file selection dialog.
                                 
                                 import_nspl <- function(nspl_path){
                                   self$postcodes <- fread(file = nspl_path, select = self$nspl_cols) %>% 
