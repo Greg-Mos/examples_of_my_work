@@ -4,3 +4,4 @@
 4. Remove the need for a complex join by removing white spaces from postcode keys before joining x
 5. Look at a simpler validation regex (e.g. https://en.wikipedia.org/wiki/Postcodes_in_the_United_Kingdom#Formatting) x
 6. Allow the user to output additonal columns (e.g. Country) from NSPL x
+7. Try and imporve the speed of the join using sorting and/or data.table. 
