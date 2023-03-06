@@ -15,6 +15,7 @@ Code that explores aspects of probability and statistics
 4. randomisation_tests.py -> Statistical randomisation (permutation and combination) tests.
 5. number_of_permutations_or_combinations.py -> Calculate the number of permutations and combinations from a given number of types to choose from and a given number of choices.
 6. clark_shaw_v1_Xsq.r -> Goodness of fit chi-square tests for two datasets from [this article](https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1740-9713.2019.01315.x)
+7. resamples_probably_v2 -> extends the functionality of [probably](https://cran.r-project.org/web/packages/probably/vignettes/where-to-use.html) for resampling in tidymodels. 
 
 ## pythonista
 Apps built in Pythonista, "a full Python IDE for iOS". 
